@@ -17,7 +17,7 @@
     var mesh;
     var clock = new THREE.Clock();
     var x2 = [];
-    var lineLenght = 24, g = 110;
+    var lineLenght, g = 110;
     var line, angle=0.25;
 
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -30,25 +30,7 @@
 
     drawPendulum(0, 0, angle);
 
-//    mesh = new THREE.Mesh(new THREE.CircleGeometry(1, 10), new THREE.MeshBasicMaterial());
-//    scene.add(mesh);
-//
-//    var nail = new THREE.Mesh (new THREE.CircleGeometry(1,10), new THREE.MeshBasicMaterial());
-//    scene.add(nail);
-//
-//    geometry = new THREE.Geometry();
-//    geometry.vertices.push (new THREE.Vector3(), new THREE.Vector3());
-//
-//    line = new THREE.Line (geometry, new THREE.LineBasicMaterial({color:0xffff00}));
-//    scene.add (line);
-//    line.visible = true;
-
-    x2[0] = angle;
-    x2[1] = 0;
-
     window.addEventListener('resize', onWindowResize, false);
-
-
 
     // INITIIALIZE ODE
     x2.push(Math.PI/6);
@@ -68,7 +50,8 @@
     }
 
     function drawPendulum(x1,y1,angle) {
-        x2[0] = angle, x2[1] = 0;
+        x2[0] = angle;
+        x2[1] = 0;
 
         var nail = new THREE.Mesh (new THREE.CircleGeometry(1,10), new THREE.MeshBasicMaterial());
         scene.add(nail);
