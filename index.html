@@ -92,9 +92,8 @@
         mesh.position.setY(-l*Math.cos(x2[0]));
         mesh.position.setX( l*Math.sin(x2[0]));
 
-        //Euler(x1, dt);
         MidPoint(x2, dt);
-        //ImplicitEuler (x3,dt);
+
 
         // draw forceLine
         if (line.visible) {
