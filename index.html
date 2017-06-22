@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pendulum</title>
+    <style>
+        canvas {width: 100%; height: 100%}
+    </style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js"></script>
+
+<script>
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 0.1, 1000);
+    var renderer = new THREE.WebGLRenderer({antialias: true});
+    var mesh;
+    var clock = new THREE.Clock();
+    var x2 = [];
+    var l = 24, g = 110;
+    var line, angle=0.25;
+
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x888888);
+    document.body.appendChild(renderer.domElement);
+    camera.position.z = 50;
+
+    scene.add(camera);
+
+    mesh = new THREE.Mesh(new THREE.CircleGeometry(1, 10), new THREE.MeshBasicMaterial());
+    scene.add(mesh);
+
+    var nail = new THREE.Mesh (new THREE.CircleGeometry(1,10), new THREE.MeshBasicMaterial());
+    scene.add(nail);
+
+    geometry = new THREE.Geometry();
+    geometry.vertices.push (new THREE.Vector3(), new THREE.Vector3());
+
+    line = new THREE.Line (geometry, new THREE.LineBasicMaterial({color:0xffff00}));
+    scene.add (line);
+    line.visible = true;
+
+    x2[0] = angle;
+    x2[1] = 0;
+
+    window.addEventListener('resize', onWindowResize, false);
+
+
+
+    // INITIIALIZE ODE
+    x2.push(Math.PI/6);
+    x2.push(0);
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function deriv(x) {
+        var ff = [];
+        ff.push(x[1]); // x_dot = v;
+        ff.push(-g/l*Math.sin(x[0]));
+        return ff;
+    }
+
+/*    function drawPendulum(x1,y1,angle) {
+        x2[0] = angle, x2[1] = 0;
+    }*/
+
+    function MidPoint(x, dt) {
+        var n = x.length;
+
+        var xcopy = x.slice(0);
+        var f = deriv(x);
+
+        // y(x+0.5h)
+        for (var i = 0; i < n; i++) {
+            xcopy[i] += f[i] * dt / 2;
+        }
+
+        f = deriv(xcopy);
+        for (var i = 0; i < n; i++) {
+            x[i] += f[i] * dt;
+        }
+    }
+
+    function animate() {
+        var dt = clock.getDelta();
+
+        mesh.position.setY(-l*Math.cos(x2[0]));
+        mesh.position.setX( l*Math.sin(x2[0]));
+
+        //Euler(x1, dt);
+        MidPoint(x2, dt);
+        //ImplicitEuler (x3,dt);
+
+        // draw forceLine
+        if (line.visible) {
+            line.geometry.verticesNeedUpdate = true;
+            line.geometry.vertices = [];
+            line.geometry.vertices.push (new THREE.Vector3 (),mesh.position.clone());
+            //forceLine.geometry.computeLineDistances();
+        }
+
+    }
+
+    function render() {
+        renderer.render(scene,camera);
+        animate();
+        requestAnimationFrame(render);
+    }
+
+    render();
+</script>
+
+</body>
+</html>
