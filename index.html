@@ -47,6 +47,8 @@
     x2[1] = 0;
 
     window.addEventListener('resize', onWindowResize, false);
+	window.addEventListener( 'mousedown', onDocumentMouseDown, false );
+	window.addEventListener( 'mouseup', onDocumentMouseUp, false );
 
 
 
@@ -110,6 +112,34 @@
             x[i] += f[i] * dt;
         }
     }
+
+    function onDocumentMouseDown (event) {
+        event.preventDefault();
+
+        // NDC: [-1,1]x[-1,1]
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+        forceLine.visible = true;
+        if (event.button === 0) {  // left button
+            mouseDown = true;
+            forceEXT = 5*(mouse.x * 50 - x2[0]);
+            console.log (forceEXT);
+        }
+    }
+
+    function onDocumentMouseUp (event) {
+        event.preventDefault();
+
+        forceLine.visible = false;
+
+        // NDC: [-1,1]x[-1,1]
+        if (mouseDown) {
+            mouseDown = false;
+            forceEXT = 0;
+        }
+    }
+
 
     function animate() {
         var dt = clock.getDelta();
