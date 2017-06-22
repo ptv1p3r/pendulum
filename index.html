@@ -17,7 +17,7 @@
     var mesh;
     var clock = new THREE.Clock();
     var x2 = [];
-    var l = 24, g = 110;
+    var lineLenght = 24, g = 110;
     var line, angle=0.25;
 
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -28,18 +28,20 @@
 
     scene.add(camera);
 
-    mesh = new THREE.Mesh(new THREE.CircleGeometry(1, 10), new THREE.MeshBasicMaterial());
-    scene.add(mesh);
+    drawPendulum(0, 0, angle);
 
-    var nail = new THREE.Mesh (new THREE.CircleGeometry(1,10), new THREE.MeshBasicMaterial());
-    scene.add(nail);
-
-    geometry = new THREE.Geometry();
-    geometry.vertices.push (new THREE.Vector3(), new THREE.Vector3());
-
-    line = new THREE.Line (geometry, new THREE.LineBasicMaterial({color:0xffff00}));
-    scene.add (line);
-    line.visible = true;
+//    mesh = new THREE.Mesh(new THREE.CircleGeometry(1, 10), new THREE.MeshBasicMaterial());
+//    scene.add(mesh);
+//
+//    var nail = new THREE.Mesh (new THREE.CircleGeometry(1,10), new THREE.MeshBasicMaterial());
+//    scene.add(nail);
+//
+//    geometry = new THREE.Geometry();
+//    geometry.vertices.push (new THREE.Vector3(), new THREE.Vector3());
+//
+//    line = new THREE.Line (geometry, new THREE.LineBasicMaterial({color:0xffff00}));
+//    scene.add (line);
+//    line.visible = true;
 
     x2[0] = angle;
     x2[1] = 0;
@@ -61,13 +63,36 @@
     function deriv(x) {
         var ff = [];
         ff.push(x[1]); // x_dot = v;
-        ff.push(-g/l*Math.sin(x[0]));
+        ff.push(-g/lineLenght*Math.sin(x[0]));
         return ff;
     }
 
-/*    function drawPendulum(x1,y1,angle) {
+    function drawPendulum(x1,y1,angle) {
         x2[0] = angle, x2[1] = 0;
-    }*/
+
+        var nail = new THREE.Mesh (new THREE.CircleGeometry(1,10), new THREE.MeshBasicMaterial());
+        scene.add(nail);
+
+        nail.position.set(x1, y1, 0);
+
+        mesh = new THREE.Mesh(new THREE.CircleGeometry(1, 10), new THREE.MeshBasicMaterial());
+        scene.add(mesh);
+
+        mesh.position.set(x1 + 10 * Math.cos(angle), y1+ 10 * Math.sin(angle), 0);
+
+        geometry = new THREE.Geometry();
+        geometry.vertices.push (new THREE.Vector3(), new THREE.Vector3());
+
+        line = new THREE.Line (geometry, new THREE.LineBasicMaterial({color:0xffff00}));
+        scene.add (line);
+        line.visible = true;
+        line.geometry.verticesNeedUpdate = true;
+        line.geometry.vertices = [];
+        line.geometry.vertices.push (new THREE.Vector3 (),mesh.position.clone());
+
+        lineLenght = Math.sqrt(Math.pow(mesh.position.x, 2) + Math.pow(mesh.position.x,2));
+
+    }
 
     function MidPoint(x, dt) {
         var n = x.length;
@@ -89,8 +114,8 @@
     function animate() {
         var dt = clock.getDelta();
 
-        mesh.position.setY(-l*Math.cos(x2[0]));
-        mesh.position.setX( l*Math.sin(x2[0]));
+        mesh.position.setY(-lineLenght*Math.cos(x2[0]));
+        mesh.position.setX( lineLenght*Math.sin(x2[0]));
 
         MidPoint(x2, dt);
 
