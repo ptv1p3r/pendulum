@@ -1,4 +1,6 @@
 1 -
+para uniformizar o processo de calculo de   matrizes de transformacao, atraves desta utilizacao e possivel
+processar transformacoes geometricas tal como acontece para a mudanca de escala e rotacao
  
 2 -
 a projecao e a conversao generica de pontos de um espaco dimensional d para um espaço de menor dimensao d-1, utilizando um ponto como centro de projecao
@@ -13,8 +15,14 @@ refexao difusa : a energia luminosa é refletida com igual intensidade em todas 
 reflexao especular : a energia luminosa que incide num ponto, segundo uma dada direcao e refletida segundo o mesmo angulo
 
 5 -
+se o objeto nao tem forma parametrica natural podemos envolve lo numa superficie simples e fazer o mapeamento do ojeto atraves de:
+    -raios normais a superficie do objeto
+    -raios normais a superficie simples
+    -raios passando pela centroide do objeto
 
 6 -
+mipmapping e considerado um pre-filtro porque e uma sequencia de imagens pre calculadas e optimizadas em que progressivamente cada imagem
+tem menos resolucao, tamanho e largura. remove os artefactos visuais, aumenta a velocidade do render e diminui o anti aliasing.
 
-7 - 
+7 -
 
